@@ -1,0 +1,109 @@
+/**
+ * Created with IntelliJ IDEA.
+ * User: dafee
+ * Date: 14-8-19
+ * Time: 下午4:30
+ * To change this template use File | Settings | File Templates.
+ */
+var n_btn = {
+    "button":[
+        {
+            "type":"click",
+            "name":"我的作业",
+            "key":"C1001_MY_HOMEWORK"
+
+        },
+        {
+            "name":"子衿社区",
+            "sub_button":[
+                {
+                    "type":"click",
+                    "name":"活动早知道",
+                    "key":"S1001_ACT_PREVIEW"
+                },
+                {
+                    "type":"click",
+                    "name":"我的活动",
+                    "key":"S1002_MY_ACT"
+                },
+                {
+                    "type":"click",
+                    "name":"互动话题",
+                    "key":"S1003_COMMUNITY"
+                },
+                {
+                    "type":"view",
+                    "name":"认识子衿",
+                    "url":"http://mp.weixin.qq.com/s?__biz=MzA3NzkwODAyNw==&mid=202044113&idx=1&sn=af3ae4a8432d64d926870a0b15d751d1#rd"
+                }
+            ]
+        },
+        {
+            "name":"会员中心",
+            "sub_button":[
+                {
+                    "type":"click",
+                    "name":"我的信息",
+                    "key":"A1001_MY_ACCOUNT"
+                },
+                {
+                    "type":"click",
+                    "name":"学习足迹",
+                    "key":"A1002_STUDY_TRACK"
+                },
+                {
+                    "type":"view",
+                    "name":"Q&A",
+                    "url":"http://mp.weixin.qq.com/s?__biz=MzA3NzkwODAyNw==&mid=202044113&idx=1&sn=af3ae4a8432d64d926870a0b15d751d1#rd"
+                }]
+        }]
+}
+
+
+var test = {
+    "button":[
+    {
+        "name":"我的课业",
+        "sub_button":[
+            {
+                "type":"click",
+                "name":"数学",
+                "key":"C1001_CURRENT_MATH"
+            },
+            {
+                "type":"click",
+                "name":"语文",
+                "key":"C1002_CURRENT_CHINESE"
+            },
+            {
+                "type":"click",
+                "name":"英语",
+                "key":"C1003_CURRENT_ENGLISH"
+            }
+        ]
+    },
+    {
+        "type":"click",
+        "name":"活动中心",
+        "key":"A1001_TEMP_ACT"
+    },
+    {
+        "name":"服务中心",
+        "sub_button":[
+            {
+                "type":"click",
+                "name":"账号绑定",
+                "key":"S1001_USER_BIND"
+            },
+            {
+                "type":"click",
+                "name":"信息完善",
+                "key":"S1001_USER_INFO_COMPLETE"
+            },
+            {
+                "type":"view",
+                "name":"关于我们",
+                "url":"http://mp.weixin.qq.com/s?__biz=MzA3NzkwODAyNw==&mid=202044113&idx=1&sn=af3ae4a8432d64d926870a0b15d751d1#rd"
+            }]
+    }]
+}
