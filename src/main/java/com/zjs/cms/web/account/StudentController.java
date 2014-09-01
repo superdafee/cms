@@ -200,60 +200,59 @@ public class StudentController {
 //        }
 //    }
 //
-//    @RequestMapping("downloadTpl")
-//    public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//        SecurityUtils.getSubject().checkRole(Constants.USER_TYPE_SCHL_ADMIN);
-//        InputStream ipsm = null;
-//        OutputStream opsm = null;
-//        try {
-//            response.setCharacterEncoding("utf-8");
-//            response.setContentType("multipart/form-data");
-//            response.setHeader("Content-Disposition", "attachment;fileName=batchUploadStudent.xls");
-//            String path = request.getSession().getServletContext().getRealPath("/");
-//            ipsm = new FileInputStream(new File(path+"tpl/batchUploadStudent.xls"));
-//            opsm = response.getOutputStream();
-//            byte[] b = new byte[1024];
-//            int length = 0;
-//            while ((length=ipsm.read(b)) > 0) {
-//                opsm.write(b, 0, length);
-//            }
-////            ipsm.close();
-//        } catch (Exception e) {
-//            response.getWriter().write("模版下载失败！");
-//            logger.error("学生信息上传模版下载失败！", e);
-//        } finally {
-//            try {
-//                if (opsm != null) {
-//                    opsm.close();
-//                }
-//                if (ipsm != null) {
-//                    ipsm.close();
-//                }
-//            } catch (Exception ex) {}
-//        }
-//    }
-//
-//    @RequestMapping("uploadStudent")
-//    public void uploadStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//        SecurityUtils.getSubject().checkRole(Constants.USER_TYPE_SCHL_ADMIN);
-//        try {
-//            CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-//            commonsMultipartResolver.setDefaultEncoding("utf-8");
-//            commonsMultipartResolver.setMaxUploadSize(Constants.UPLOAD_FILE_SIZE);
-//            if (commonsMultipartResolver.isMultipart(request)) {
-//                MultipartHttpServletRequest multipartRequest = commonsMultipartResolver.resolveMultipart(request);
-//                MultipartFile fileData = multipartRequest.getFile("fileData");
-//                response.setContentType("text/html;charset=UTF-8");
-//                response.getWriter().write(studentService.upload(fileData));
-//            }
-//        } catch ( MaxUploadSizeExceededException ex) {
-//            response.getWriter().write("上传文件超过大小限制(" + Constants.UPLOAD_FILE_SIZE/(1000*1000) + "M)");
-//        } catch (Exception ex) {
-//            response.getWriter().write("学生信息导入发生错误，请稍后再试或联系管理员。");
-//        }
-//    }
-//
-//
+    @RequestMapping("downloadTpl")
+    public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        InputStream ipsm = null;
+        OutputStream opsm = null;
+        try {
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=batchUploadStudent.xls");
+            String path = request.getSession().getServletContext().getRealPath("/");
+            ipsm = new FileInputStream(new File(path+"tpl/batchUploadStudent.xls"));
+            opsm = response.getOutputStream();
+            byte[] b = new byte[1024];
+            int length = 0;
+            while ((length=ipsm.read(b)) > 0) {
+                opsm.write(b, 0, length);
+            }
+        } catch (Exception e) {
+            response.getWriter().write("模版下载失败！");
+            logger.error("学生信息上传模版下载失败！", e);
+        } finally {
+            try {
+                if (opsm != null) {
+                    opsm.close();
+                }
+                if (ipsm != null) {
+                    ipsm.close();
+                }
+            } catch (Exception ex) {}
+        }
+    }
+
+    @RequestMapping("uploadStudent")
+    public void uploadStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        try {
+            CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+            commonsMultipartResolver.setDefaultEncoding("utf-8");
+            commonsMultipartResolver.setMaxUploadSize(Constants.UPLOAD_FILE_SIZE);
+            if (commonsMultipartResolver.isMultipart(request)) {
+                MultipartHttpServletRequest multipartRequest = commonsMultipartResolver.resolveMultipart(request);
+                MultipartFile fileData = multipartRequest.getFile("fileData");
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(studentService.upload(fileData));
+            }
+        } catch ( MaxUploadSizeExceededException ex) {
+            response.getWriter().write("上传文件超过大小限制(" + Constants.UPLOAD_FILE_SIZE/(1000*1000) + "M)");
+        } catch (Exception ex) {
+            response.getWriter().write("学生信息导入发生错误，请稍后再试或联系管理员。");
+        }
+    }
+
+
 
     /**
      * 使用@ModelAttribute, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出Task对象,再把Form提交的内容绑定到该对象上。

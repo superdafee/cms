@@ -10,6 +10,8 @@ import com.zjs.cms.repository.ParentStudentDao;
 import com.zjs.cms.repository.StudentDao;
 import com.zjs.cms.service.ServiceException;
 import com.zjs.cms.utils.ShiroUserUtil;
+import jxl.Sheet;
+import jxl.Workbook;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -231,19 +234,15 @@ public class StudentService {
         }
     }
 
-//    /**
-//     * 批量保存上传来的学生信息
-//     * @param fileData CommonsMultipartFile
-//     * @return 上传结果
-//     */
-//    @Transactional
-//    public String upload(MultipartFile fileData) {
-//        StringBuilder errMess = new StringBuilder();
-//
-//        School school = schoolDao.findOne(ShiroUserUtil.getCurrentUser().getSchoolId());
-//        String[] typeArr = school.getType().split(",");
-//        List<String> phaseList = Arrays.asList(typeArr);
-//
+    /**
+     * 批量保存上传来的学生信息
+     * @param fileData CommonsMultipartFile
+     * @return 上传结果
+     */
+    @Transactional
+    public String upload(MultipartFile fileData) {
+        StringBuilder errMess = new StringBuilder();
+
 //        if (!fileData.isEmpty()) {
 //            try {
 //                Workbook wb = Workbook.getWorkbook(fileData.getInputStream());
@@ -252,7 +251,7 @@ public class StudentService {
 //                    // 学生信息
 //                    Student student = new Student();
 //                    if (StringUtils.isEmpty(sheet.getCell(0, i).getContents())) {
-//                        errMess.append("第").append(i+1).append("行记录请输入格式正确的登录名（学号）！");
+//                        errMess.append("第").append(i+1).append("行记录请输入格式正确的学生姓名！");
 //                        continue;
 //                    } else {
 //                        if (studentsMap.containsKey(sheet.getCell(0, i).getContents())) {
@@ -516,10 +515,10 @@ public class StudentService {
 //                logger.error(ex.getMessage(), ex);
 //            }
 //        }
-//
-//        return errMess.toString();
-//    }
-//
+
+        return errMess.toString();
+    }
+
 //    /**
 //     * 取得需要传输的学生名单
 //     * @param schoolCode 学校编码

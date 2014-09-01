@@ -105,7 +105,7 @@
         <div class="modal hide fade" id="uploadModal">
             <div id="main_title"><a class="close" data-dismiss="modal">×</a>管理系统</div>
             <div class="modal-body">
-                <p>下载批量导入模板：<input class="btn_com_text4" onclick="javascript:location.href='${ctx}/student/downloadTpl?navi=2'" type="button" value="模版下载"/></p>
+                <p>下载批量导入模板：<input class="btn_com_text4" onclick="javascript:location.href='${ctx}/student/downloadTpl'" type="button" value="模版下载"/></p>
                 <hr>
                 <p>批量导入学生信息：<input type="file" id="batchfd" name="fileData"/></p>
             </div>

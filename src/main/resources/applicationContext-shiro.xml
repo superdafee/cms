@@ -25,6 +25,7 @@
 			<value>
 				/login = authc
 				/logout = logout
+                /tpl/** = anon
 				/static/** = anon
                 /testme/** = anon
                 /weixin/** = anon
