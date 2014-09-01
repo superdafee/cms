@@ -13,7 +13,7 @@ request.setAttribute("current", current);
 request.setAttribute("begin", begin);
 request.setAttribute("end", end);
 %>
-
+<input type="hidden" name="pageNumber" id="pageNumber" value="${current}"/>
 <div class="pagination">
 	<ul>
 		 <% if (page.hasPreviousPage()){%>

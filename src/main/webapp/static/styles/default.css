@@ -18,3 +18,42 @@
 }
 
 #footer a {color: #999;}
+
+/* title样式 */
+#main_title {
+    background:url(../images/title_color.png) no-repeat #e7e7e7;
+    height:34px;
+    line-height:34px;
+    padding-left:25px;
+    color:#565555;
+    font-size:14px;
+}
+.modal   #main_title{
+    background: #e7e7e7;
+    height:34px;
+    line-height:34px;
+    padding-left:25px;
+    color:#565555;
+    font-size:14px;
+    font-weight:bold;
+    margin:1px 1px 0 1px;
+}
+#main_title .close{
+    margin-top:5px;
+    margin-right:10px;
+}
+.line_dotted {
+    border-bottom:1px dotted #c7c7c7;
+    height:3px;
+}
+
+.foot_btn {
+    background:#f1f1f1;
+    border:1px dotted #dbdbdb;
+    height:70px;
+    line-height:70px;
+    padding-left:120px;
+}
+.foot_btn input {
+    margin-right:15px;
+}
