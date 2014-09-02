@@ -58,6 +58,31 @@ public class WeixinUtil {
         return  false;
     }
     /**
+     * 验证
+     * @param request
+     * @return
+     */
+    public static boolean zValidate(HttpServletRequest request) throws NoSuchAlgorithmException {
+        String token="zjsweixin2014";
+        String  signature=request.getParameter("signature");
+        String  timestamp =request.getParameter("timestamp");
+        String  nonce =request.getParameter("nonce");
+        String[] array={token,timestamp,nonce};
+        Arrays.sort(array);
+        String tmpStr=array[0]+array[1]+array[2];
+        MessageDigest md = null;
+        md = MessageDigest.getInstance("SHA-1");
+        byte[] digest = md.digest(tmpStr.getBytes());
+        tmpStr= byteToStr(digest);
+        //tmpStr= DigestUtils.sha1Hex(tmpStr);
+        System.out.println("tmpStr="+tmpStr);
+        System.out.println("signature="+signature);
+        if(tmpStr.equals(signature.toUpperCase())){
+            return  true;
+        }
+        return  false;
+    }
+    /**
      * 将字节数组转换为十六进制字符串
      *
      * @param byteArray

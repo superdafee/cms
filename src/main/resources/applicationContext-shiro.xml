@@ -23,14 +23,14 @@
 		<property name="successUrl" value="/" />
 		<property name="filterChainDefinitions">
 			<value>
-				/login = authc
-				/logout = logout
-                /tpl/** = anon
-				/static/** = anon
-                /testme/** = anon
-                /weixin/** = anon
                 /index = anon
                 / = anon
+                /login = authc
+                /logout = logout
+                /tpl/** = anon
+                /static/** = anon
+                /testme/** = anon
+                /weixin/** = anon
 				/api/** = anon
 				/register/** = anon
 				/admin/** = roles[admin]

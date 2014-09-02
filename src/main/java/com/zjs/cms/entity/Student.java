@@ -19,6 +19,9 @@ public class Student {
     private Date createtime;
     private String isdeleted;
 
+    private School school;
+
+
     private List<ParentStudentCon> parentList = new ArrayList<ParentStudentCon>();
 
     @Id
@@ -85,5 +88,15 @@ public class Student {
 
     public void addParentList(ParentStudentCon conn) {
         this.parentList.add(conn);
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "school_id")
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
     }
 }

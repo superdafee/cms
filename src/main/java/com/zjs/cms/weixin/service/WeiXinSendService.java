@@ -1,9 +1,18 @@
 package com.zjs.cms.weixin.service;
 
 
+import com.zjs.cms.entity.Parent;
+import com.zjs.cms.entity.ParentStudentCon;
+import com.zjs.cms.repository.ParentDao;
+import com.zjs.cms.repository.ParentStudentDao;
+import com.zjs.cms.repository.StudentDao;
+import com.zjs.cms.utils.PropertiesUtil;
 import com.zjs.cms.weixin.entity.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +26,15 @@ import java.util.List;
 @Service
 public class WeiXinSendService {
     public static  int NUMBER=3;
+    private static Logger logger = LoggerFactory.getLogger(WeiXinSendService.class);
+
+    @Resource
+    private StudentDao studentDao;
+    @Resource
+    private ParentDao parentDao;
+    @Resource
+    private ParentStudentDao parentStudentDao;
+
     /**
      * 处理文本消息发送文本消息
      * @param textMessage
@@ -73,7 +91,7 @@ public class WeiXinSendService {
      * @throws Exception
      */
     public  String sendEventMessage(EventMessage message) throws Exception {
-        String content="欢迎关注作业辅导平台！";
+        String content="欢迎关注中小学教育支撑平台！";
         System.out.println("#######:"+message.getEvent());
         if(message.getEvent().equals("unsubscribe")){
             content="谢谢退出";
@@ -91,6 +109,37 @@ public class WeiXinSendService {
                 "</xml>" ;
         return  xml;
     }
+
+    /**
+     * 反馈事件消息
+     * @param message
+     * @return
+     * @throws Exception
+     */
+    public  String zSendEventMessage(EventMessage message) throws Exception {
+        String content;
+        System.out.println("#######:"+message.getEvent());
+        if(message.getEvent().equals("unsubscribe")){
+            content="感谢您对本平台的支持";
+        }else if(message.getEvent().equals("subscribe")){
+
+            content="感谢您关注作业辅导平台，获取最及时、高质量的同步作业辅导微课程，参与精彩的线下活动，绑定您的信息后可以获得丰富的定制化功能。\n" +
+                    "<a href='"+ PropertiesUtil.getWeixinAppValue("weixin.host")+"/bindAccount/"+message.getFromUserName()+"'>绑定账号</a>";
+        }else if(message.getEvent().equalsIgnoreCase("click")){
+            return replyEventAction(message);
+        }else{
+            content="功能正在开发中，请持续关注...";
+        }
+        String xml="<xml>" +
+                "<ToUserName><![CDATA["+message.getFromUserName()+"]]></ToUserName>" +
+                "<FromUserName><![CDATA["+message.getToUserName()+"]]></FromUserName>" +
+                "<CreateTime>"+message.getCreateTime()+"</CreateTime>" +
+                "<MsgType><![CDATA[text]]></MsgType>" +
+                "<Content><![CDATA["+content+"]]></Content>" +
+                "</xml>" ;
+        return  xml;
+    }
+
     /**
      * 反馈事件消息
      * @param message
@@ -147,6 +196,48 @@ public class WeiXinSendService {
 
                     xml.append("</Articles>");
                     xml.append("</xml>");
+                }else if(msg.getEventKey().equals("A1001_MY_ACCOUNT")){
+                    ParentStudentCon pscon = parentStudentDao.queryByOpenid(msg.getFromUserName());
+                    if(pscon!=null&&pscon.getParent()!=null){
+                        xml.append("<xml>");
+                        xml.append("<ToUserName><![CDATA["+msg.getFromUserName()+"]]></ToUserName>");
+                        xml.append("<FromUserName><![CDATA["+msg.getToUserName()+"]]></FromUserName>");
+                        xml.append("<CreateTime>"+msg.getCreateTime()+"</CreateTime>");
+                        xml.append("<MsgType><![CDATA[text]]></MsgType>");
+                        xml.append("<Content><![CDATA[");
+
+
+                        xml.append("您的账号信息如下：\n");
+                        xml.append("学生姓名：\n" );
+                        xml.append(pscon.getStudent().getRealname());
+                        xml.append("\n学校：\n");
+                        xml.append(pscon.getStudent().getSchool().getName());
+                        xml.append("\n年级：\n");
+                        xml.append(pscon.getStudent().getGrade()+"年级");
+                        xml.append("\n班级：\n");
+                        xml.append(pscon.getStudent().getClassname());
+                        xml.append("\n家长姓名：\n");
+                        xml.append(pscon.getParent().getRealname());
+                        xml.append("\n联系方式：\n");
+                        xml.append(pscon.getParent().getMobile());
+
+
+                        xml.append("]]></Content>" );
+
+                        xml.append("</xml>") ;
+                    }else{
+                        xml.append("<xml>");
+                        xml.append("<ToUserName><![CDATA["+msg.getFromUserName()+"]]></ToUserName>" );
+                        xml.append("<FromUserName><![CDATA["+msg.getToUserName()+"]]></FromUserName>" );
+                        xml.append("<CreateTime>"+msg.getCreateTime()+"</CreateTime>" );
+                        xml.append("<MsgType><![CDATA[text]]></MsgType>" );
+                        xml.append("<Content><![CDATA[" );
+                        xml.append("您尚未绑定您的账号信息，绑定您的信息后可以获得丰富的定制化功能，请点击以下链接进行账号绑定\n");
+                        xml.append("<a href='"+ PropertiesUtil.getWeixinAppValue("weixin.host")+"/bindAccount/"+msg.getFromUserName()+"'>绑定账号</a>");
+                        xml.append("]]></Content>");
+                        xml.append("</xml>") ;
+                    }
+
                 }else{
                     xml.append("<xml>" +
                             "<ToUserName><![CDATA["+msg.getFromUserName()+"]]></ToUserName>" +
