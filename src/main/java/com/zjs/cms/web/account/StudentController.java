@@ -51,7 +51,7 @@ public class StudentController {
     }
 
     @RequestMapping(value = "list")
-    public String list(@RequestParam(value = "sortType", defaultValue = "realname_desc") String sortType,
+    public String list(@RequestParam(value = "sortType", defaultValue = "realname_asc") String sortType,
                        @RequestParam(value = "page", defaultValue = "1") int pageNumber, Model model, HttpServletRequest request) {
 
         Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
@@ -180,26 +180,6 @@ public class StudentController {
         return "redirect:/student/list?page=" + page + "&sortType=" + sortType;
     }
 
-//    /**
-//     * Ajax请求校验username是否唯一。
-//     */
-//    @RequestMapping(value = "checkUsername")
-//    @ResponseBody
-//    public String checkUsername(@RequestParam("username") String username, HttpServletRequest request) {
-//        ShiroDbRealm.ShiroUser user = (ShiroDbRealm.ShiroUser) SecurityUtils.getSubject().getPrincipal();
-//        try {
-//            Student  stu = studentService.findByUsernameAndSchoolId(username,user.getSchoolId());
-//            String sid = request.getParameter("id");
-//            if (stu == null || (stu!=null && sid!=null &&!sid.equals("") && stu.getId().equals(Long.parseLong(sid)))) {
-//                return "true";
-//            } else {
-//                return "false";
-//            }
-//        }catch (Exception e){
-//            return "false";
-//        }
-//    }
-//
     @RequestMapping("downloadTpl")
     public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -251,8 +231,6 @@ public class StudentController {
             response.getWriter().write("学生信息导入发生错误，请稍后再试或联系管理员。");
         }
     }
-
-
 
     /**
      * 使用@ModelAttribute, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出Task对象,再把Form提交的内容绑定到该对象上。

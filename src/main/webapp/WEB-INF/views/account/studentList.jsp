@@ -119,15 +119,15 @@
             <a class="btn" href="javascript:void(0)" onclick="checkAndShowModal()">批量删除</a>
             <a class="btn" href="javascript:void(0)" onclick="openUploadDialog()">批量导入</a></div>
         <input type="hidden" id="uploadSuccessFlg" name="uploadSuccessFlg" />
-		<div class="span4 offset6">
+        <div style="float: right">
 
 				<label>姓名：</label> <input type="text" name="search_LIKE_realname" class="input-medium" value="${searchName}">
 				<button type="submit" class="btn" id="search_btn">Search</button>
 
 	    </div>
-	    <tags:sort/>
+	    <%--<tags:sort/>--%>
 	</div>
-	
+	<br/>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead><tr><th style="text-align: center;"><input type="checkbox" name="all" onclick="toggleCheckBox($(this),'studentId');"/></th><th>姓名</th><th>年级</th><th>班级</th><th>创建时间</th><th>操作</th></tr></thead>
 		<tbody>

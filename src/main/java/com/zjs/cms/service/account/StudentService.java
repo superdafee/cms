@@ -46,10 +46,6 @@ public class StudentService {
     @Resource
     private ParentStudentDao parentStudentDao;
 
-    // 考虑到通过学生批量上传时，家长的频繁查找，设定该缓存
-    private Map<String, Parent> parentsMap = Collections.synchronizedMap(new HashMap<String, Parent>());
-    private Map<String, String> studentsMap = Collections.synchronizedMap(new HashMap<String, String>());
-
     /**
      * 批量查找学生
      * @param ids
@@ -67,20 +63,6 @@ public class StudentService {
         return list;
   }
 
-//    /**
-//     *  更新登录信息（登录时间）
-//     * @param userId Long
-//     */
-//    @Transactional
-//    public void updateLoginInfo(Long userId) {
-//
-//        Student user = studentDao.findOne(userId);
-//
-//        // 插入登录信息
-//        user.setLastLoginTime(dateProvider.getDate());
-//        studentDao.save(user);
-//    }
-//
     /**
      * 取得学生列表
      * @param filterParams  Map<String, Object>
@@ -383,38 +365,6 @@ public class StudentService {
         return errMess.toString();
     }
 
-//    /**
-//     * 取得需要传输的学生名单
-//     * @param schoolCode 学校编码
-//     * @param timeStamp 时间戳
-//     * @return 学生名单
-//     * @throws Exception
-//     */
-//    public List<Student> getTransferData(String schoolCode, String timeStamp) throws Exception {
-//        SimpleDateFormat sdf = new SimpleDateFormat(WebServiceConstants.DATE_FORMAT);
-//        if (WebServiceConstants.TIMESTAMP_FOR_FIRSTTIME.equals(timeStamp)) {
-//            // 需要传输所有数据的时候（只用在第一次传输时）
-//            return studentDao.findTransferData(schoolCode);
-//        }
-//        return studentDao.findTransferData(schoolCode, sdf.parse(timeStamp));
-//    }
-//
-//    /**
-//     * 取得需要传输的学生和班级的关联信息
-//     * @param schoolCode 学校编码
-//     * @param timeStamp 时间戳
-//     * @return 学生名单
-//     * @throws Exception
-//     */
-//    public List<ClassStudent> getTransferDataForClassStudent(String schoolCode, String timeStamp) throws Exception {
-//        SimpleDateFormat sdf = new SimpleDateFormat(WebServiceConstants.DATE_FORMAT);
-//        if (WebServiceConstants.TIMESTAMP_FOR_FIRSTTIME.equals(timeStamp)) {
-//            // 需要传输所有数据的时候（只用在第一次传输时）
-//            return classStudentDao.findTransferData(schoolCode);
-//        }
-//        return classStudentDao.findTransferData(schoolCode, sdf.parse(timeStamp));
-//    }
-
     /**
      * 创建分页请求.
      */
@@ -429,35 +379,6 @@ public class StudentService {
         return new PageRequest(pageNumber - 1, pageSize, sort);
     }
 
-//    /**
-//     * 根据高拍仪编号取得学生列表
-//     * @param pn 高拍仪编号
-//     * @return 学生列表
-//     */
-//    public List<Student> getStudentsByPn(String pn) {
-//        return studentDao.findByPn(pn);
-//    }
-//
-//    /**
-//     * 根据家长手机号取得学生列表
-//     * @param phone 家长手机号
-//     * @return 学生列表
-//     */
-//    public List<Student> getStudentsByParentPhone(String phone) {
-//        return studentDao.findByParentPhone(phone);
-//    }
-//
-//    @Transactional
-//    public void saveStudentInfo(Student student) {
-//        try {
-//            studentDao.save(student);
-//
-//        } catch (Exception ex) {
-//            logger.error("保存信息出错。");
-//            throw new ServiceException(ex.getMessage(), ex);
-//        }
-//    }
-//
     /**
      * 创建动态查询条件组合.
      */
@@ -465,34 +386,6 @@ public class StudentService {
         Map<String, ExtSearchFilter> filters = ExtSearchFilter.parse2(filterParams);
         return ExtDynamicSpecifications.bySearchFilter(filters.values(), Student.class);
     }
-//
-//    /**
-//     * 设定安全的密码，生成随机的salt并经过1次 sha-1 hash
-//     */
-//    private void entryptPassword(Student user, String parentsPhone) {
-//        byte[] salt = Digests.generateSalt(Constants.SALT_SIZE);
-//        salt = StringUtil.toUnsignedByte(salt);
-//        user.setSalt(Encodes.encodeHex(salt));
-//
-//        // 手机后六位
-//        String phoneLast6 = parentsPhone.substring(parentsPhone.length() - 6);
-//
-//        byte[] hashPassword = Digests.sha1(phoneLast6.getBytes(), salt, Constants.HASH_INTERATIONS);
-//        user.setPassword(Encodes.encodeHex(hashPassword));
-//    }
-//
-//    /**
-//     * 设定安全的密码，生成随机的salt并经过1次 sha-1 hash
-//     */
-//    private void entryptPasswordForParents(Parents parents) {
-//        byte[] salt = Digests.generateSalt(Constants.SALT_SIZE);
-//        salt = StringUtil.toUnsignedByte(salt);
-//        parents.setSalt(Encodes.encodeHex(salt));
-//
-//        byte[] hashPassword = Digests.sha1(Constants.DEFAULT_PASSWORD_PARENTS.getBytes(), salt, Constants.HASH_INTERATIONS);
-//        parents.setPassword(Encodes.encodeHex(hashPassword));
-//    }
-
 
     private Map<String, Integer> getRelationMap() {
         Map<String, Integer> map = new HashMap<String, Integer>();

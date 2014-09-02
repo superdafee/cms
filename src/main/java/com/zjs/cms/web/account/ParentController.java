@@ -1,9 +1,24 @@
 package com.zjs.cms.web.account;
 
+import com.google.common.collect.Maps;
+import com.zjs.cms.entity.Parent;
+import com.zjs.cms.service.account.ParentService;
+import com.zjs.cms.utils.Constants;
+import com.zjs.cms.utils.URLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springside.modules.web.Servlets;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * ParentsController负责家长相关信息的操作
@@ -16,234 +31,118 @@ public class ParentController {
 
     private static Logger logger = LoggerFactory.getLogger(ParentController.class);
 
-//
-//    @Resource
-//    private ParentsService parentsService;
+    @Resource
+    private ParentService parentService;
 //    @Resource
 //    private StudentService studentService;
 //
-//    /**
-//     * Ajax请求校验username是否唯一。
-//     */
-//    @RequestMapping(value = "checkNameAndPhone")
-//    @ResponseBody
-//    public String findByNameAndMobile(@RequestParam("id") String id, @RequestParam("realname") String realname,
-//                                      @RequestParam("mobilePhone") String mobilePhone) {
-//        if (StringUtils.isNotEmpty(id)) {
-//            Parents parents = parentsService.findById(Long.parseLong(id));
-//            // 从修改页面
-////            if (!parents.getRealname().equals(realname) || !parents.getMobilePhone().equals(mobilePhone)) {
-////                if (parentsService.findByNameAndMobile(realname, mobilePhone) != null) {
-////                    return "false";
-////                }
-////            }
-//            if (!parents.getMobilePhone().equals(mobilePhone)) {
-//                if (parentsService.findByPhone(mobilePhone) != null) {
-//                    return "false";
-//                }
-//            }
-//        } else {
-//            if (parentsService.findByPhone(mobilePhone) != null) {
-//                return "false";
-//            }
-//        }
-//        return "true";
-//    }
-//
-//    /**
-//     * 进入修改家长密码页面
-//     * @param model
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping(value = "modifyPassword")
-//    public String modifyPassword(Model model ,HttpServletRequest request){
-//        ShiroUserUtil.checkAnyRoles(Constants.USER_TYPE_PARENTS, Constants.USER_TYPE_SCHL_ADMIN);
-//        return "parent/info/editParentPassword";
-//    }
-//
-//    /**
-//     * 进入修改密码的界面
-//     * @param model
-//     * @param redirectAttributes
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping(value = "toModifyPassword",method = RequestMethod.POST)
-//    public String toModifyPassword(Model model,RedirectAttributes redirectAttributes,HttpServletRequest request){
-//        ShiroUserUtil.checkAnyRoles(Constants.USER_TYPE_PARENTS, Constants.USER_TYPE_SCHL_ADMIN);
-//        String oldPassword = request.getParameter("oldPassword");
-//        String plainPassword = request.getParameter("plainPassword");
-//
-//        ShiroDbRealm.ShiroUser user = (ShiroDbRealm.ShiroUser) SecurityUtils.getSubject().getPrincipal();
-//        Parents parents =parentsService.findById(user.id)  ;
-//
-//        byte[] hashPassword = Digests.sha1(oldPassword.getBytes(), Encodes.decodeHex(parents.getSalt()), Constants.HASH_INTERATIONS);
-//        String olddPassword = Encodes.encodeHex(hashPassword) ; //olddPassword表示把填写的旧密码加了密的
-//
-//        if (olddPassword.equals(parents.getPassword())) {
-//            parents.setPlainPassword(plainPassword);
-//            parentsService.plainPassword(parents);
-//            parentsService.savePassword(parents);
-//            redirectAttributes.addFlashAttribute("message", "密码修改成功");
-//            return "redirect:/parent/viewParentsInformation";
-//        } else {
-//            redirectAttributes.addFlashAttribute("message", "密码修改失败，旧密码不正确。");
-//            return "redirect:/parent/modifyPassword";
-//        }
-//    }
-//
-//    /**
-//     * 查看家长个人信息
-//     * @param model
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping(value = "viewParentsInformation")
-//    public String viewTeacherInformation(  Model model, HttpServletRequest request) {
-//        ShiroUserUtil.checkAnyRoles(Constants.USER_TYPE_PARENTS, Constants.USER_TYPE_SCHL_ADMIN);
-//        ShiroDbRealm.ShiroUser user = (ShiroDbRealm.ShiroUser) SecurityUtils.getSubject().getPrincipal();
-//        Parents parents = parentsService.findById(user.id);
-//        model.addAttribute("isVIP", user.isVIP());
-//        model.addAttribute("parents", parents);
-//        return "parent/info/viewParentsInformation";
-//    }
-//
-//    /**
-//     * 编辑家长信息
-//     * @param model
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping(value = "editParentsInformation")
-//    public String editParentsInformation(  Model model, HttpServletRequest request) {
-//        SecurityUtils.getSubject().checkRole(Constants.USER_TYPE_PARENTS);
-//        ShiroDbRealm.ShiroUser user = (ShiroDbRealm.ShiroUser) SecurityUtils.getSubject().getPrincipal();
-//        Parents parents = parentsService.findById(user.id);
-//        model.addAttribute("parents", parents);
-//        return "parent/info/editParentsInformation";
-//    }
-//
-//    /**
-//     * 修改家长个人信息
-//     * @param model
-//     * @param request
-//     * @param response
-//     * @return
-//     * @throws java.text.ParseException
-//     */
-//    @RequestMapping(value = "modifyParentsInformation")
-//    public String modifyParentsInformation(Model model,HttpServletRequest request,HttpServletResponse response) throws ParseException {
-//        SecurityUtils.getSubject().checkRole(Constants.USER_TYPE_PARENTS);
-//        ShiroDbRealm.ShiroUser user = (ShiroDbRealm.ShiroUser) SecurityUtils.getSubject().getPrincipal();
-//        Parents parents = parentsService.findById(user.id);
-//
-//        parents.setRealname(request.getParameter("realname"));
-//        parents.setGender(request.getParameter("gender"));
-//        parents.setJob(request.getParameter("job"));
-//        String birthday=request.getParameter("birthday");
-//        if(birthday!=null && !birthday.equals("")){
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//            parents.setBirthday(sdf.parse(request.getParameter("birthday")));
-//        }
-//        parents.setAddress(request.getParameter("address"));
-//        parents.setQq(request.getParameter("qq"));
-////        parents.setMobilePhone(request.getParameter("mobilePhone"));
-//        parents.setAvatarPath(request.getParameter("avatarPath"));
-//        parents.setEmail(request.getParameter("email"));
-//        parentsService.saveInformation(parents);
-//
-//        user.setPicPath(parents.getAvatarPath());
-//
-//        model.addAttribute("parents", parents);
-//        model.addAttribute("message", "修改个人信息成功");
-//        return "redirect:/parent/viewParentsInformation";
-//    }
-//
-//    @RequestMapping(value = "viewChildrenInfo")
-//    public String viewChildrenInfo(Model model, HttpServletRequest request) {
-//        ShiroUserUtil.checkAnyRoles(Constants.USER_TYPE_PARENTS, Constants.USER_TYPE_SCHL_ADMIN);
-//        ShiroDbRealm.ShiroUser user = ShiroUserUtil.getCurrentUser();
-//        Student student = user.getDefaultChild();
-//        Student defaultChild = studentService.findById(student.getId());
-//
-//        model.addAttribute("student", defaultChild);
-//        return "parent/info/viewChildrenInfo";
-//    }
-//
-//    @RequestMapping(value="uploadParentsPicture")
-//    public String uploadParentsPicture(Model model,HttpServletRequest request,HttpServletResponse response,RedirectAttributes redirectAttributes){
-//        ShiroUserUtil.checkAnyRoles(Constants.USER_TYPE_PARENTS, Constants.USER_TYPE_SCHL_ADMIN);
-//        ShiroDbRealm.ShiroUser shiroUser = ShiroUserUtil.getCurrentUser();
-//        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-//        commonsMultipartResolver.setDefaultEncoding("utf-8");
-//        commonsMultipartResolver.setMaxUploadSize(1 * 1000 * 1000);
-//        String newfileName ="";
-//        String relativePath="";
-//        PrintWriter pw=null;
-//        if (commonsMultipartResolver.isMultipart(request)) {
-//            //转换成多部分request
-//            MultipartHttpServletRequest multipartRequest=null;
-//            try
-//            {//文件大于1M request 会转化失败必须捕捉提示
-//                pw=response.getWriter();
-//                multipartRequest = commonsMultipartResolver.resolveMultipart(request);
-//            }
-//            catch (MultipartException e1)
-//            {
-//                pw.write("error2");
-//                return null;
-//
-//            }catch (IOException e2)
-//            {
-//                pw.write("error2");
-//                return null;
-//
-//            }
-//            String  content = new File(new File(request.getSession().getServletContext()
-//                    .getRealPath("/")).getParent()).getParent();
-//            relativePath= PropertiesUtil.getConfigValue("main.upload")+"parents/";
-//            String path = content+relativePath;
-//            File dirPath = new File(path);
-//            if (!dirPath.exists()) {
-//                dirPath.mkdirs();
-//            }
-//            List<MultipartFile>  FileList = multipartRequest.getFiles("fileName");
-//            if(FileList==null || FileList.size()<=0){
-//                pw.write("error1");
-//                return null;
-//            }
-//            for (MultipartFile Filedata : FileList)
-//            {
-//                if(Filedata.getSize()<=0L){
-//                    pw.write("error1");
-//                    return null;
-//                }
-//                if(Filedata.getSize()>(1 * 1000 * 1000)){
-//                    pw.write("error2");
-//                    return null;
-//                }
-//                if(Filedata.getOriginalFilename()!=null && !Filedata.getOriginalFilename().equals("")){
-//                    String endsuffix= FileUtil.getFileSuffix(Filedata.getOriginalFilename());
-//                    newfileName = shiroUser.getId()+"_"+ DateUtil.getDateFormat(new Date(), DateUtil.FORMAT2)+"."+endsuffix;
-//
-//                    if (!Filedata.isEmpty()) {
-//                        try
-//                        {
-//                            FileCopyUtils.copy(Filedata.getBytes(), new File(path + File.separator + newfileName));
-////                            parentsService.updateHeadPic(relativePath+newfileName,shiroUser.getId());
-//                            //重新登录更新图片
-////                            shiroUser.setPicPath(relativePath+newfileName);
-//                        }
-//                        catch (IOException e)
-//                        {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        pw.write(relativePath+newfileName);
-//        return null;
-//    }
+
+    private static Map<String, String> sortTypes = Maps.newLinkedHashMap();
+    static {
+        sortTypes.put("auto", "自动");
+        sortTypes.put("realname_asc", "姓名");
+    }
+
+    @RequestMapping(value = "list")
+    public String list(@RequestParam(value = "sortType", defaultValue = "realname_asc") String sortType,
+                       @RequestParam(value = "page", defaultValue = "1") int pageNumber, Model model, HttpServletRequest request) {
+
+        Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
+        if (searchParams == null || searchParams.isEmpty()) {
+            searchParams = URLUtil.mergeSearchParamInFlashMap(request, "search_");
+        }
+
+        searchParams.put("EQ_isdeleted", "N");
+
+        String searchName= request.getParameter("search_LIKE_realname");
+        if (searchName!=null && !searchName.equals("")){
+            searchParams.put("LIKE_realname", searchName);
+        }
+        Page<Parent> parents = parentService.getAllParents(searchParams, pageNumber, Constants.PAGE_SIZE, sortType);
+        model.addAttribute("parents", parents);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortTypes", sortTypes);
+        model.addAttribute("searchName",searchName);
+        model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
+
+        model.addAttribute("searchParamsMap", searchParams);
+
+        return "account/parentList";
+    }
+
+    @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+    public String update(@PathVariable("id") Long id, Model model, HttpServletRequest request) throws  Exception {
+
+        Parent parent = parentService.findById(id);
+        model.addAttribute("parent", parent);
+
+        // 为了返回列表时，保留页数和查询条件，将信息存于Hidden中
+        Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
+        model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
+        model.addAttribute("sortType", request.getParameter("sortType"));
+        model.addAttribute("page", request.getParameter("page"));
+
+        model.addAttribute("action", "update");
+
+        return "account/parentForm";
+    }
+
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    public String update(@Valid @ModelAttribute("preloadParent") Parent user, HttpServletRequest request,
+                         RedirectAttributes redirectAttributes) {
+
+
+        parentService.update(user);
+
+        redirectAttributes.addFlashAttribute("message", "家长更新成功");
+
+        String page = request.getParameter("page");
+        String sortType = request.getParameter("sortType");
+        String searchParams = request.getParameter("searchParams");
+        redirectAttributes.addFlashAttribute("searchParams", searchParams);
+
+        return "redirect:/parent/list?page=" + page + "&sortType=" + sortType;
+    }
+
+    @RequestMapping(value = "delete/{id}")
+    public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+        parentService.delete(id);
+        redirectAttributes.addFlashAttribute("message", "家长删除成功");
+
+        String page = request.getParameter("page");
+        String sortType = request.getParameter("sortType");
+        Map<String, Object> searchParamsMap = Servlets.getParametersStartingWith(request, "search_");
+        String searchParams = Servlets.encodeParameterStringWithPrefix(searchParamsMap, "search_");
+        redirectAttributes.addFlashAttribute("searchParams", searchParams);
+
+        return "redirect:/parent/list?page=" + page + "&sortType=" + sortType;
+    }
+
+    @RequestMapping(value = "deleteBySelected/{ids}")
+    public String deleteBySelected(@PathVariable("ids") String ids, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+        parentService.deleteBySelected(ids);
+        redirectAttributes.addFlashAttribute("message", "家长删除成功");
+
+        String page = request.getParameter("page");
+        String sortType = request.getParameter("sortType");
+        Map<String, Object> searchParamsMap = Servlets.getParametersStartingWith(request, "search_");
+        String searchParams = Servlets.encodeParameterStringWithPrefix(searchParamsMap, "search_");
+        redirectAttributes.addFlashAttribute("searchParams", searchParams);
+
+        return "redirect:/parent/list?page=" + page + "&sortType=" + sortType;
+    }
+
+    /**
+     * 使用@ModelAttribute, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出Task对象,再把Form提交的内容绑定到该对象上。
+     * 因为仅update()方法的form中有id属性，因此本方法在该方法中执行.
+     */
+    @ModelAttribute("preloadParent")
+    public Parent getParent(@RequestParam(value = "id", required = false) Long id) {
+        if (id != null) {
+            return parentService.findById(id);
+        }
+        return null;
+    }
 }
