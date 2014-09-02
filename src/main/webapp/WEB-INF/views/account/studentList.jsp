@@ -7,6 +7,7 @@
 <html>
 <head>
 	<title>学生管理</title>
+    <script src="${ctx}/static/jquery/jquery.form.js" type="text/javascript"></script>
     <script>
         <!--
         function showModal(id) {
@@ -47,6 +48,63 @@
                 $('#myModal').modal('show');
             }
         }
+
+        function openUploadDialog() {
+            $('#uploadModal').modal('show');
+        }
+
+        $(document).ready(function() {
+
+            $('#uploadModal').modal({
+                backdrop: "static",
+                keyboard: true,
+                show: false
+            });
+
+            var options = {
+                target:        '#uploadModal',
+                beforeSubmit:  showRequest,
+                success:       showResponse
+            };
+            $('#uldv').ajaxForm(options);
+        });
+
+        function showRequest(formData, jqForm, options){
+            if ($('#batchfd').val()==""){
+                alert("请先选择上传Excel文件!");
+                return false;
+            }
+
+            var filename = $("#batchfd").val();
+            if (((/[.]/.exec(filename)) ? /[^.]+$/.exec(filename.toLowerCase()) : '')!="xls") {
+                alert("批量导入的学生信息文件类型为Excel 2003格式！");
+                return false;
+            }
+
+            $('#uploadModal').modal('hide');
+            uploading();
+            return true;
+        }
+
+        function showResponse(responseText, statusText) {
+            $("#uploadMsg").html();
+            if (responseText == null || responseText == "") {
+                $("#uploadSuccessFlg").val("1");
+                setInterval("refreshPage()", 1000);
+            } else {
+                $('#uploadMsg').addClass("alert alert-error");
+                var dataArr = responseText.split("！");
+                $('#uploadMsg').html("<p>批量导入错误信息：</p>");
+                for (var i = 0; i < dataArr.length; i++) {
+                    $('#uploadMsg').html($('#uploadMsg').html()+ dataArr[i] + '<br/>');
+                }
+            }
+        }
+
+        function uploading() {
+            $('#uploadMsg').html("<div class=\"progress progress-striped active\"><div class=\"bar\" style=\"width: 100%;\"></div></div>");
+            $('#rsModal').modal('show');
+        }
         //-->
     </script>
 </head>
@@ -60,6 +118,7 @@
         <div style="float: left"><a class="btn" href="${ctx}/student/add">新建学生</a>
             <a class="btn" href="javascript:void(0)" onclick="checkAndShowModal()">批量删除</a>
             <a class="btn" href="javascript:void(0)" onclick="openUploadDialog()">批量导入</a></div>
+        <input type="hidden" id="uploadSuccessFlg" name="uploadSuccessFlg" />
 		<div class="span4 offset6">
 
 				<label>姓名：</label> <input type="text" name="search_LIKE_realname" class="input-medium" value="${searchName}">
@@ -105,13 +164,13 @@
         <div class="modal hide fade" id="uploadModal">
             <div id="main_title"><a class="close" data-dismiss="modal">×</a>管理系统</div>
             <div class="modal-body">
-                <p>下载批量导入模板：<input class="btn_com_text4" onclick="javascript:location.href='${ctx}/student/downloadTpl'" type="button" value="模版下载"/></p>
+                <p>下载批量导入模板：<input class="btn btn-primary" onclick="javascript:location.href='${ctx}/student/downloadTpl'" type="button" value="模版下载"/></p>
                 <hr>
                 <p>批量导入学生信息：<input type="file" id="batchfd" name="fileData"/></p>
             </div>
             <div class="modal-footer">
-                <input class="btn_com_text4" id="submit_btn" type="submit" value="批量导入"/>
-                <input type="button"  class="btn_com_b" data-dismiss="modal" value="关闭" />
+                <input class="btn btn-primary" id="submit_btn" type="submit" value="批量导入"/>
+                <input type="button"  class="btn" data-dismiss="modal" value="关闭" />
             </div>
         </div>
     </form>

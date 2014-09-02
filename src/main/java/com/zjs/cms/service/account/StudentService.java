@@ -9,6 +9,7 @@ import com.zjs.cms.repository.ParentDao;
 import com.zjs.cms.repository.ParentStudentDao;
 import com.zjs.cms.repository.StudentDao;
 import com.zjs.cms.service.ServiceException;
+import com.zjs.cms.utils.RegexValidatorUtil;
 import com.zjs.cms.utils.ShiroUserUtil;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -243,278 +244,141 @@ public class StudentService {
     public String upload(MultipartFile fileData) {
         StringBuilder errMess = new StringBuilder();
 
-//        if (!fileData.isEmpty()) {
-//            try {
-//                Workbook wb = Workbook.getWorkbook(fileData.getInputStream());
-//                Sheet sheet = wb.getSheet(0);
-//                for (int i = 1; i < sheet.getRows(); i++) {
-//                    // 学生信息
-//                    Student student = new Student();
-//                    if (StringUtils.isEmpty(sheet.getCell(0, i).getContents())) {
-//                        errMess.append("第").append(i+1).append("行记录请输入格式正确的学生姓名！");
-//                        continue;
-//                    } else {
-//                        if (studentsMap.containsKey(sheet.getCell(0, i).getContents())) {
-//                            // 相同记录存在的前提下，忽略后面的
-//                            errMess.append("第").append(i+1).append("行记录学号已经存在！");
-//                            continue;
-//                        } else {
-//
-//                            if (studentDao.findByUsernameAndSchoolId(sheet.getCell(0, i).getContents(), school.getId()) != null) {
-//                                errMess.append("第").append(i+1).append("行记录学号已经存在！");
-//                                continue;
-//                            }
-//                        }
-//                    }
-//
-//                    student.setUsername(sheet.getCell(0, i).getContents());
-//                    if ( !RegexValidatorUtil.isName(sheet.getCell(1, i).getContents())){
-//                        errMess.append("第").append(i+1).append("行记录姓名只能是中文或英文字母,且不能为空！");
-//                        continue;
-//                    }
-//                    student.setRealname(sheet.getCell(1, i).getContents());
-//                    if (!"0".equals(sheet.getCell(2, i).getContents()) && !"1".equals(sheet.getCell(2, i).getContents())) {
-//                        errMess.append("第").append(i+1).append("行记录性别只能是0或1，且不能为空！");
-//                        continue;
-//                    }
-//                    student.setGender(sheet.getCell(2, i).getContents());
-//                    if (sheet.getCell(3, i) != null && StringUtils.isNotBlank(sheet.getCell(3, i).getContents())) {
-//                        if ( !RegexValidatorUtil.isBirthday(sheet.getCell(3, i).getContents(), "yyyy-MM-dd")){
-//                            errMess.append("第").append(i+1).append("行记录请输入格式正确的出生日期！");
-//                            continue;
-//                        }
-//                    }
-//
-//                    if (sheet.getCell(4, i) != null && StringUtils.isNotBlank(sheet.getCell(4, i).getContents())) {
-//                        if ( !RegexValidatorUtil.isBirthday(sheet.getCell(4, i).getContents(), "yyyy-MM-dd")){
-//                            errMess.append("第").append(i+1).append("行记录请输入格式正确的入学日期！");
-//                            continue;
-//                        }
-//                    }
-//
-//                    if (DateUtil.StringToDate(sheet.getCell(3, i).getContents(), DateUtil.FORMAT).getTime()
-//                        >= DateUtil.StringToDate(sheet.getCell(4, i).getContents(), DateUtil.FORMAT).getTime()) {
-//                        errMess.append("第").append(i+1).append("行记录出生日期不得大于入学日期！");
-//                        continue;
-//                    }
-//
-//                    student.setBirthdayStr(sheet.getCell(3, i).getContents());
-//                    student.setEnrollTimeStr(sheet.getCell(4, i).getContents());
-//
-//                    String failgoupNum = sheet.getCell(5, i).getContents();
-//                    if (StringUtils.isEmpty(failgoupNum)) {
-//                        errMess.append("第").append(i+1).append("行记录留级次数只能输入0~3之间的整数，且不能为空！");
-//                        continue;
-//                    } else if (StringUtils.isNotEmpty(failgoupNum) && !RegexValidatorUtil.isNumber(failgoupNum)) {
-//                        errMess.append("第").append(i+1).append("行记录留级次数只能输入0~3之间的整数，且不能为空！");
-//                        continue;
-//                    } else if (Integer.parseInt(failgoupNum) > 3) {
-//                        errMess.append("第").append(i+1).append("行记录留级次数只能输入0~3之间的整数，且不能为空！");
-//                        continue;
-//                    }
-//                    student.setFailgoupNum(Integer.parseInt(failgoupNum));
-//
-//                    SClass sClass = null;
-//                    // 班级信息
-//                    String className = sheet.getCell(6, i).getContents();
-//                    String startYear = sheet.getCell(7, i).getContents();
-//                    String phase = sheet.getCell(8, i).getContents();
-//
-//                    if (StringUtils.isEmpty(className)) {
-//                        errMess.append("第").append(i+1).append("行记录所属班级名不能为空！");
-//                        continue;
-//                    }
-//                    if (StringUtils.isEmpty(startYear)) {
-//                        errMess.append("第").append(i+1).append("行记录入学年份/级格式只能是大于2000的整数，且不能为空！");
-//                        continue;
-//                    } else if (!RegexValidatorUtil.isNumber(startYear)) {
-//                        errMess.append("第").append(i+1).append("行记录入学年份/级格式只能是大于2000的整数，且不能为空！");
-//                        continue;
-//                    } else if (startYear.compareTo("2000") < 0) {
-//                        errMess.append("第").append(i+1).append("行记录入学年份/级格式只能是大于2000的整数，且不能为空！");
-//                        continue;
-//                    }
-//                    if (StringUtils.isEmpty(phase)) {
-//                        errMess.append("第").append(i+1).append("行记录阶段格式只能是“小学或初中”，且不能为空！");
-//                        continue;
-//                    } else if (!phaseType.containsKey(phase)) {
-//                        errMess.append("第").append(i+1).append("行记录阶段格式只能是“小学或初中”，且不能为空！");
-//                        continue;
-//                    } else {
-//                        String inputStr = phaseType.get(phase);
-//                        if (!phaseList.contains(inputStr)) {
-//                            errMess.append("第").append(i+1).append("行记录该学校没有").append(phase).append("阶段！");
-//                            continue;
-//                        } else {
-//                            sClass = classDao.findClassByInfo(inputStr, startYear, className, school.getId());
-//                            if (sClass == null) {
-//                                errMess.append("第").append(i+1).append("行记录该学校没有该班级信息，请先注册相关班级信息！");
-//                                continue;
-//                            }
-//                        }
-//                    }
-//
-//                    String mac = sheet.getCell(9, i).getContents();
-//                    String pn = sheet.getCell(10, i).getContents();
-//                    if (StringUtils.isEmpty(mac)) {
-//                        errMess.append("第").append(i+1).append("行记录答题器MAC地址只能填写字母（A-F）、数字和横线，且不能为空！");
-//                        continue;
-//                    } else if (StringUtils.isNotEmpty(mac) && !RegexValidatorUtil.isMac(mac)) {
-//                        errMess.append("第").append(i+1).append("行记录答题器MAC地址只能填写字母（A-F）、数字和横线，且不能为空！");
-//                        continue;
-//                    } else {
-//                        String result = findByMac(mac, null);
-//                        if ("false".equals(result)) {
-//                            errMess.append("第").append(i+1).append("行记录答题器MAC地址已存在！");
-//                            continue;
-//                        }
-//                    }
-//                    student.setMac(mac);
-//
-//                    if (StringUtils.isNotEmpty(pn) && pn.length() > 20) {
-//                        errMess.append("第").append(i+1).append("行记录高拍仪设备编号最大长度不得超过20位！");
-//                        continue;
-//                    }
-//                    student.setPn(pn);
-//
-//                    // 家长信息
-//                    Parents parents = new Parents();
-//                    String parentName = sheet.getCell(11, i).getContents();
-//                    String parentGender = sheet.getCell(12, i).getContents();
-//                    String relation = sheet.getCell(13, i).getContents();
-//                    String mobilePhone = sheet.getCell(14, i).getContents();
-//
-////                    if (StringUtils.isEmpty(parentName) && (
-////                            StringUtils.isNotEmpty(relation) || StringUtils.isNotEmpty(mobilePhone))) {
-//                    if (StringUtils.isEmpty(parentName)) {
-//                        errMess.append("第").append(i+1).append("行记录家长姓名只能是中文或英文字母，且不能为空！");
-//                        continue;
-//                    } else if (StringUtils.isNotEmpty(parentName) && !RegexValidatorUtil.isName(parentName)) {
-//                        errMess.append("第").append(i+1).append("行记录家长姓名只能是中文或英文字母，且不能为空！");
-//                        continue;
-//                    }
-//
-//                    if (StringUtils.isEmpty(parentGender)) {
-//                        errMess.append("第").append(i+1).append("行记录家长性别只能是M或F，且不能为空！");
-//                        continue;
-//                    } else if (StringUtils.isNotEmpty(parentGender) && (!"M".equals(parentGender)
-//                             && !"F".equals(parentGender))) {
-//                        errMess.append("第").append(i+1).append("行记录家长性别只能是M或F，且不能为空！");
-//                        continue;
-//                    }
-//
-////                    if (StringUtils.isEmpty(relation) && (
-////                            StringUtils.isNotEmpty(parentName) || StringUtils.isNotEmpty(mobilePhone))) {
-//                    if (StringUtils.isEmpty(relation)) {
-//                        errMess.append("第").append(i+1).append("行记录关系不能为空！");
-//                        continue;
-//                    }
-//
-//                    Parents record = null;
-//                    boolean parentIsExist = false;
-////                    if (StringUtils.isEmpty(mobilePhone) && (StringUtils.isNotEmpty(parentName)
-////                            || StringUtils.isNotEmpty(relation))) {
-//                    if (StringUtils.isEmpty(mobilePhone)) {
-//                        errMess.append("第").append(i+1).append("行记录请输入格式正确的手机号码！");
-//                        continue;
-//                    } else if (StringUtils.isNotEmpty(mobilePhone) && !RegexValidatorUtil.isMobile(mobilePhone)) {
-//                        errMess.append("第").append(i+1).append("行记录请输入格式正确的手机号码！");
-//                        continue;
-//                    }
-////                    else if (StringUtils.isNotEmpty(mobilePhone) && StringUtils.isNotEmpty(parentName)) {
-////                        if (parentsMap.containsKey(mobilePhone + parentName)) {
-////                            record = parentsMap.get(mobilePhone + parentName);
-////                            parentIsExist = true;
-////                        } else {
-////
-////                            record = parentsDao.findByNameAndMobile(parentName, mobilePhone);
-////
-////                            if (record == null && parentsDao.findByPhone(mobilePhone) != null) {
-////                                errMess.append("第").append(i+1).append("行记录系统已存在相同的手机号码！");
-////                                continue;
-////                            } else if (record != null) {
-////                                parentIsExist = true;
-////                            }
-////                        }
-////                    }
-//                    else if (StringUtils.isNotEmpty(mobilePhone)) {
-//                        if (parentsMap.containsKey(mobilePhone)) {
-//                            errMess.append("第").append(i+1).append("行记录系统已存在相同的手机号码！");
-//                            continue;
-//                        } else {
-//                            record = parentsDao.findByPhone(mobilePhone);
-//                            if (record != null) {
-//                                errMess.append("第").append(i+1).append("行记录系统已存在相同的手机号码！");
-//                                continue;
-//                            }
-//                        }
-//                    }
-//
-////                    parents.setRealname(parentName);
-////                    parents.setRelation(relation);
-////                    parents.setMobilePhone(mobilePhone);
-//
-//                    // 学生班级关联关系
-//                    ClassStudent classStudent = new ClassStudent();
-//
-//                    classStudent.setCreatetime(dateProvider.getDate());
-//                    classStudent.setUpdateTime(dateProvider.getDate());
-//                    classStudent.setSchoolId(ShiroUserUtil.getCurrentUser().getSchoolId());
-//                    classStudent.setIsDeleted("N");
-//
-//                    if (StringUtils.isNotEmpty(mobilePhone)) {
-//                        entryptPassword(student, mobilePhone);
-//                    }
-//                    setTime(student);
-//                    student.setRegisterTime(dateProvider.getDate());
-//                    student.setIsDeleted("N");
-//                    student.setFailgoupNum(0);
-//                    student.setUpdateTime(dateProvider.getDate());
-//                    student.setSchool(school);
-//
-//                    try {
-//                        if (StringUtils.isNotEmpty(mobilePhone)) {
-//                            if (parentIsExist) {
-//                                student.setMyParent(record);
-//                            } else {
-//                                parents.setRealname(parentName);
-//                                parents.setRelation(relation);
-//                                parents.setMobilePhone(mobilePhone);
-//                                parents.setRegisterTime(dateProvider.getDate());
-//                                parents.setIsDeleted("N");
-//                                parents.setGender(parentGender);
-////                                entryptPasswordForParents(parents);
-//                                student.setMyParent(parents);
-//                                parentsDao.save(parents);
-//                            }
-//                        }
-//
-//                        student.setsClass(sClass);
-//                        student = studentDao.save(student);
-//                        classStudent.setClassId(sClass.getId());
-//                        classStudent.setStudentId(student.getId());
-//
-//                        classStudentDao.save(classStudent);
-//
-//                        studentsMap.put(sheet.getCell(0, i).getContents(), sheet.getCell(0, i).getContents());
-//                        if (parentIsExist) {
-//                            parentsMap.put(mobilePhone + parentName, record);
-//                        } else {
-//                            parentsMap.put(mobilePhone + parentName, parents);
-//                        }
-//
-//                        setupExtInfo(student.getId());
-//                    } catch (Exception e) {
-//                        logger.error("添加学生信息出错。学校ID{} 操作员{}", ShiroUserUtil.getCurrentUser().getSchoolId(), ShiroUserUtil.getCurrentUser().getUsername());
-//                        errMess.append("第").append(i+1).append("行记录：新增失败！");
-//                    }
-//                }
-//            } catch (Exception ex) {
-//                errMess.append("学生数据导入发生未知错误，请稍后再试或联系管理员。错误信息：").append(ex.getMessage());
-//                logger.error("学生数据导入发生未知错误! 学校ID{} 操作员{}", ShiroUserUtil.getCurrentUser().getSchoolId(), ShiroUserUtil.getCurrentUser().getUsername());
-//                logger.error(ex.getMessage(), ex);
-//            }
-//        }
+        Date currentDate = new Date();
+        if (!fileData.isEmpty()) {
+            try {
+                Workbook wb = Workbook.getWorkbook(fileData.getInputStream());
+                Sheet sheet = wb.getSheet(0);
+                for (int i = 1; i < sheet.getRows(); i++) {
+                    // 学生信息
+                    Student student = new Student();
+
+                    if ( !RegexValidatorUtil.isName(sheet.getCell(0, i).getContents())){
+                        errMess.append("第").append(i+1).append("行记录学生姓名只能是中文或英文字母,且不能为空！");
+                        continue;
+                    } else if (sheet.getCell(0, i).getContents().length() > 20) {
+                        errMess.append("第").append(i+1).append("行记录学生姓名长度不能超过20！");
+                        continue;
+                    }
+                    student.setRealname(sheet.getCell(0, i).getContents());
+
+                    if (StringUtils.isEmpty(sheet.getCell(1, i).getContents())) {
+                        errMess.append("第").append(i+1).append("行记录年级只能是1-12的整数，且不能为空！");
+                        continue;
+                    } else if (!RegexValidatorUtil.isNumber(sheet.getCell(1, i).getContents())) {
+                        errMess.append("第").append(i+1).append("行记录年级只能是1-12的整数，且不能为空！");
+                        continue;
+                    } else if (Integer.parseInt(sheet.getCell(1, i).getContents()) < 0 ||
+                            Integer.parseInt(sheet.getCell(1, i).getContents()) > 12) {
+                        errMess.append("第").append(i+1).append("行记录年级只能是1-12的整数，且不能为空！");
+                        continue;
+                    }
+                    student.setGrade(Integer.parseInt(sheet.getCell(1, i).getContents()));
+
+                    if (StringUtils.isEmpty(sheet.getCell(2, i).getContents())) {
+                        errMess.append("第").append(i+1).append("行记录所属班级名不能为空！");
+                        continue;
+                    } else if (sheet.getCell(2, i).getContents().length() > 20) {
+                        errMess.append("第").append(i+1).append("行记录所属班级名长度不能超过20！");
+                        continue;
+                    }
+                    student.setClassname(sheet.getCell(0, i).getContents());
+
+                    student.setIsdeleted("N");
+                    student.setCreatetime(currentDate);
+
+                    // 家长信息
+                    Parent parents = new Parent();
+                    String parentName = sheet.getCell(3, i).getContents();
+                    String mobile = sheet.getCell(5, i).getContents();
+                    String phone = sheet.getCell(6, i).getContents();
+                    String relation = sheet.getCell(4, i).getContents();
+
+                    if (StringUtils.isEmpty(parentName) && (
+                            StringUtils.isNotEmpty(mobile) || StringUtils.isNotEmpty(phone))) {
+
+                        if ( !RegexValidatorUtil.isName(parentName)){
+                            errMess.append("第").append(i+1).append("行记录家长姓名只能是中文或英文字母,且不能为空！");
+                            continue;
+                        } else if (parentName.length() > 20) {
+                            errMess.append("第").append(i+1).append("行记录家长姓名长度不能超过20！");
+                            continue;
+                        }
+                    }
+
+                    if (StringUtils.isEmpty(mobile) && (
+                            StringUtils.isNotEmpty(parentName) || StringUtils.isNotEmpty(phone))) {
+
+                        if (StringUtils.isEmpty(mobile)) {
+                            errMess.append("第").append(i+1).append("行记录请输入格式正确的手机号码！");
+                            continue;
+                        } else if (StringUtils.isNotEmpty(mobile) && !RegexValidatorUtil.isMobile(mobile)) {
+                            errMess.append("第").append(i+1).append("行记录请输入格式正确的手机号码！");
+                            continue;
+                        }
+                    }
+
+                    if (StringUtils.isEmpty(phone) && (
+                            StringUtils.isNotEmpty(mobile) || StringUtils.isNotEmpty(parentName))) {
+
+                        if (StringUtils.isEmpty(phone)) {
+                            errMess.append("第").append(i+1).append("行记录请输入格式正确的其它电话号码！");
+                            continue;
+                        } else if (StringUtils.isNotEmpty(phone) && !RegexValidatorUtil.isMobile(phone)) {
+                            errMess.append("第").append(i+1).append("行记录请输入格式正确的其它电话号码！");
+                            continue;
+                        }
+                    }
+
+                    if (StringUtils.isEmpty(mobile) && StringUtils.isEmpty(parentName) && StringUtils.isEmpty(phone)
+                            && StringUtils.isNotEmpty(relation)) {
+                        errMess.append("第").append(i+1).append("行记录请输入家长姓名、手机号以及其他电话号码！");
+                        continue;
+                    }
+
+                    if (StringUtils.isNotEmpty(mobile) && StringUtils.isNotEmpty(parentName) && StringUtils.isNotEmpty(phone)) {
+                        if (StringUtils.isEmpty(relation)) {
+                            errMess.append("第").append(i+1).append("行记录请输入关系！");
+                            continue;
+                        } else if (!getRelationMap().containsKey(relation)) {
+                            errMess.append("第").append(i+1).append("行记录请输入正确的关系！");
+                            continue;
+                        }
+                    }
+
+                    try {
+
+                        student = studentDao.save(student);
+
+                        if (StringUtils.isNotEmpty(mobile)) {
+                            parents.setRealname(parentName);
+                            parents.setMobile(mobile);
+                            parents.setPhone(phone);
+                            parents.setIsdeleted("N");
+                            parents.setCreatetime(currentDate);
+                            parents = parentDao.save(parents);
+
+                            ParentStudentCon parentStudentCon = new ParentStudentCon();
+                            parentStudentCon.setCreatetime(currentDate);
+                            parentStudentCon.setRelation(getRelationMap().get(relation));
+                            parentStudentCon.setStudent(student);
+                            parentStudentCon.setParent(parents);
+                            parentStudentCon.setIsdeleted("N");
+
+                            parentStudentDao.save(parentStudentCon);
+                        }
+
+                    } catch (Exception e) {
+                        logger.error("添加学生信息出错。操作员{}", ShiroUserUtil.getCurrentUser().getName());
+                        errMess.append("第").append(i+1).append("行记录：新增失败！");
+                    }
+                }
+            } catch (Exception ex) {
+                errMess.append("学生数据导入发生未知错误，请稍后再试或联系管理员。错误信息：").append(ex.getMessage());
+                logger.error("学生数据导入发生未知错误! 操作员{}", ShiroUserUtil.getCurrentUser().getName());
+                logger.error(ex.getMessage(), ex);
+            }
+        }
 
         return errMess.toString();
     }
@@ -628,64 +492,18 @@ public class StudentService {
 //        byte[] hashPassword = Digests.sha1(Constants.DEFAULT_PASSWORD_PARENTS.getBytes(), salt, Constants.HASH_INTERATIONS);
 //        parents.setPassword(Encodes.encodeHex(hashPassword));
 //    }
-//
 
 
-//    public void setDateProvider(DateProvider dateProvider) {
-//		this.dateProvider = dateProvider;
-//	}
-//
-//    /**
-//     * 更新学生头像
-//     * @param path
-//     * @param id
-//     */
-//    @Transactional
-//    public void updateHeadPic( String path,Long id){
-//        studentDao.updateHeadPic(path,id);
-//    }
-//    /**
-//     * 查找一个班所有的学生，包括被删除的
-//     * @param classId
-//     * @return
-//     */
-//    public List<Student> findByClassIdAll(Long classId)
-//    {
-//
-//      return studentDao.findByClassIdAll(classId);
-//    }
-//
-//    /**
-//     * 创建用户扩展信息
-//     *
-//     * @param userId 用户Id
-//     */
-//    @Transactional
-//    public void setupExtInfo(Long userId) {
-//        try {
-//            UserExt userExt = userExtDao.findByStudentIdAndTerm(userId, DateUtil.getCurrentTerm());
-//            if (userExt == null) {
-//                UserExt newUserExt = new UserExt();
-//                newUserExt.setCoin(0L);
-//                newUserExt.setPoints(0L);
-//                newUserExt.setLevel(1);
-//                newUserExt.setStudent(studentDao.findOne(userId));
-//                newUserExt.setTerm(DateUtil.getCurrentTerm());
-//
-//                userExtDao.save(newUserExt);
-//            }
-//        } catch (Exception ex) {
-//            logger.error("注册学生扩展信息出错。操作员{}", ShiroUserUtil.getCurrentUser().getUsername());
-//            throw new ServiceException(ex.getMessage(), ex);
-//        }
-//
-//    }
-//
-//    public List<Student> findBySchoolIds(List<Long> ids) {
-//       return studentDao.findbySchoolids(ids);
-//    }
-//
-//    public List<Student> findByClassIds(List<Long> ids) {
-//        return studentDao.findByClassIds(ids);
-//    }
+    private Map<String, Integer> getRelationMap() {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("父亲", 1);
+        map.put("母亲", 2);
+        map.put("祖父", 3);
+        map.put("祖母", 4);
+        map.put("外祖父", 5);
+        map.put("外祖母", 6);
+        map.put("其他", 7);
+
+        return map;
+    }
 }

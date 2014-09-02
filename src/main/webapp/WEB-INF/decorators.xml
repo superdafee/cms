@@ -6,6 +6,7 @@
 		<pattern>/testme/*</pattern>
 		<pattern>/weixin/*</pattern>
 		<pattern>/index</pattern>
+        <pattern>/student/uploadStudent</pattern>
 	</excludes>
 	
 	<decorator name="default" page="default.jsp">
