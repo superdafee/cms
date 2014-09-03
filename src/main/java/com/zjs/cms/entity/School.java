@@ -2,6 +2,7 @@ package com.zjs.cms.entity;
 
 import javax.persistence.*;
 import java.security.Timestamp;
+import java.util.Date;
 
 /**
  * 学校
@@ -13,18 +14,16 @@ public class School {
     private Long id;
     private String region;
     private String name;
-    private int phase;
-    private int nature;
+    private Integer phase;
+    private Integer nature;
     private String contact;
     private String address;
-    private int type;
+    private Integer type;
     private String fondingyear;
-    private Timestamp createtime;
+    private Date createtime;
     private String isdeleted;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SchoolSequence")
-    @SequenceGenerator(name = "SchoolSequence", sequenceName = "seq_school", allocationSize = 1)
     public Long getId() {
         return id;
     }
@@ -49,19 +48,19 @@ public class School {
         this.name = name;
     }
 
-    public int getPhase() {
+    public Integer getPhase() {
         return phase;
     }
 
-    public void setPhase(int phase) {
+    public void setPhase(Integer phase) {
         this.phase = phase;
     }
 
-    public int getNature() {
+    public Integer getNature() {
         return nature;
     }
 
-    public void setNature(int nature) {
+    public void setNature(Integer nature) {
         this.nature = nature;
     }
 
@@ -81,11 +80,11 @@ public class School {
         this.address = address;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -97,11 +96,11 @@ public class School {
         this.fondingyear = fondingyear;
     }
 
-    public Timestamp getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Timestamp createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 

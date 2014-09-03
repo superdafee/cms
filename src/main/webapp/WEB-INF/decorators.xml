@@ -5,6 +5,7 @@
 		<pattern>/api/*</pattern>
 		<pattern>/testme/*</pattern>
 		<pattern>/weixin/*</pattern>
+		<pattern>/user/*</pattern>
 		<pattern>/index</pattern>
         <pattern>/student/uploadStudent</pattern>
 	</excludes>

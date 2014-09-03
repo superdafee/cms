@@ -155,8 +155,11 @@ public class WeiXinController {
 //        }
         if(map.get("MsgType").equals("event")){   //事件消息
             EventMessage message= weiXinReceiveService.receiveEventMessage(map);
-            sendXml=weiXinSendService.sendEventMessage(message);
+            sendXml=weiXinSendService.zSendEventMessage(message);
 
+        }else{
+            TextMessage message= weiXinReceiveService.receiveTextMessage(map);
+            sendXml=weiXinSendService.sendTextMessage(message);
         }
 //        System.out.println(sendXml);
         pw.write(sendXml);

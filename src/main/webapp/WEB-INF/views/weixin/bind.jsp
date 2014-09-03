@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: dafee
@@ -10,19 +11,22 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title></title>
+    <title>账号绑定</title>
     <link href="${ctx}/static/bootstrap/3.2.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <script src="${ctx}/static/jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
 </head>
 <body>
 <div style="width: 100%; padding: 1% 1% 0 1%">
 <div class="panel panel-default">
     <!-- Default panel contents -->
-    <div class="panel-heading" style="background-color: #dddddd">账号绑定</div>
+    <div class="panel-heading" style="background-color: #dddddd">填写并保存信息完成您的绑定</div>
 
     <div class="panel-body">
 
         <form role="form">
-            OPENID:${openid}
+            <%--OPENID:${openid}--%>
+            <input type="hidden" value="${openid}" name="openid" />
+
             <div class="form-group">
                 <label for="exampleInputEmail1">Email address</label>
                 <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">

@@ -47,7 +47,8 @@ public class WeiXinSendService {
                 "<FromUserName><![CDATA["+textMessage.getToUserName()+"]]></FromUserName>" +
                 "<CreateTime>"+textMessage.getCreateTime()+"</CreateTime>" +
                 "<MsgType><![CDATA[text]]></MsgType>" +
-                "<Content><![CDATA["+textMessage.getContent()+"]]></Content>" +
+//                "<Content><![CDATA["+textMessage.getContent()+"]]></Content>" +
+                "<Content><![CDATA[请通过菜单选择您要使用的功能，谢谢您的配合。]]></Content>" +
                 "</xml>" ;
         return  xml;
     }
@@ -124,7 +125,7 @@ public class WeiXinSendService {
         }else if(message.getEvent().equals("subscribe")){
 
             content="感谢您关注作业辅导平台，获取最及时、高质量的同步作业辅导微课程，参与精彩的线下活动，绑定您的信息后可以获得丰富的定制化功能。\n" +
-                    "<a href='"+ PropertiesUtil.getWeixinAppValue("weixin.host")+"/bindAccount/"+message.getFromUserName()+"'>绑定账号</a>";
+                    "<a href='"+ PropertiesUtil.getWeixinAppValue("weixin.host")+"/weixin/user/bindAccount/"+message.getFromUserName()+"'>绑定账号</a>";
         }else if(message.getEvent().equalsIgnoreCase("click")){
             return replyEventAction(message);
         }else{
@@ -233,7 +234,7 @@ public class WeiXinSendService {
                         xml.append("<MsgType><![CDATA[text]]></MsgType>" );
                         xml.append("<Content><![CDATA[" );
                         xml.append("您尚未绑定您的账号信息，绑定您的信息后可以获得丰富的定制化功能，请点击以下链接进行账号绑定\n");
-                        xml.append("<a href='"+ PropertiesUtil.getWeixinAppValue("weixin.host")+"/bindAccount/"+msg.getFromUserName()+"'>绑定账号</a>");
+                        xml.append("<a href='"+ PropertiesUtil.getWeixinAppValue("weixin.host")+"/weixin/user/bindAccount/"+msg.getFromUserName()+"'>绑定账号</a>");
                         xml.append("]]></Content>");
                         xml.append("</xml>") ;
                     }
