@@ -41,14 +41,14 @@ public class WeiXinSendService {
      * @return
      * @throws Exception
      */
-    public  String sendTextMessage(TextMessage textMessage) throws Exception {
+    public  String sendTextMessage(TextMessage textMessage, String content) throws Exception {
         String xml="<xml>" +
                 "<ToUserName><![CDATA["+textMessage.getFromUserName()+"]]></ToUserName>" +
                 "<FromUserName><![CDATA["+textMessage.getToUserName()+"]]></FromUserName>" +
                 "<CreateTime>"+textMessage.getCreateTime()+"</CreateTime>" +
                 "<MsgType><![CDATA[text]]></MsgType>" +
 //                "<Content><![CDATA["+textMessage.getContent()+"]]></Content>" +
-                "<Content><![CDATA[请通过菜单选择您要使用的功能，谢谢您的配合。]]></Content>" +
+                "<Content><![CDATA["+content+"]]></Content>" +
                 "</xml>" ;
         return  xml;
     }
@@ -185,18 +185,38 @@ public class WeiXinSendService {
             String msgType ;
             if(msg.getEvent().equalsIgnoreCase("click")){
                 if(msg.getEventKey().equals("C1001_MY_HOMEWORK")){
+//                    xml.append("<xml>");
+//                    xml.append("<ToUserName><![CDATA["+msg.getFromUserName()+"]]></ToUserName>");
+//                    xml.append("<FromUserName><![CDATA["+msg.getToUserName()+"]]></FromUserName>");
+//                    xml.append("<CreateTime>"+msg.getCreateTime()+"</CreateTime>");
+//                    xml.append("<MsgType><![CDATA[news]]></MsgType>");
+//                    xml.append("<ArticleCount>"+3+"</ArticleCount>");
+//                    xml.append("<Articles>");
+//
+//                    xml.append(appendResponseNewsXml(newsList));
+//
+//                    xml.append("</Articles>");
+//                    xml.append("</xml>");
+
+                    //演示用
+
                     xml.append("<xml>");
                     xml.append("<ToUserName><![CDATA["+msg.getFromUserName()+"]]></ToUserName>");
                     xml.append("<FromUserName><![CDATA["+msg.getToUserName()+"]]></FromUserName>");
                     xml.append("<CreateTime>"+msg.getCreateTime()+"</CreateTime>");
-                    xml.append("<MsgType><![CDATA[news]]></MsgType>");
-                    xml.append("<ArticleCount>"+3+"</ArticleCount>");
-                    xml.append("<Articles>");
+                    xml.append("<MsgType><![CDATA[text]]></MsgType>");
+                    xml.append("<Content><![CDATA[");
 
-                    xml.append(appendResponseNewsXml(newsList));
+                    xml.append("选择学科查看作业辅导\n\n");
+                    xml.append("<a href='"+ PropertiesUtil.getWeixinAppValue("weixin.host")+"/weixin/hw/list/1'>数学</a>\n");
+                    xml.append("<a href='"+ PropertiesUtil.getWeixinAppValue("weixin.host")+"/weixin/hw/list/2'>语文</a>\n");
+                    xml.append("<a href='"+ PropertiesUtil.getWeixinAppValue("weixin.host")+"/weixin/hw/list/3'>英语</a>");
 
-                    xml.append("</Articles>");
-                    xml.append("</xml>");
+                    xml.append("]]></Content>" );
+
+                    xml.append("</xml>") ;
+
+
                 }else if(msg.getEventKey().equals("A1001_MY_ACCOUNT")){
                     ParentStudentCon pscon = parentStudentDao.queryByOpenid(msg.getFromUserName());
                     if(pscon!=null&&pscon.getParent()!=null){

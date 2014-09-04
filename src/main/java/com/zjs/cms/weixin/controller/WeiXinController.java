@@ -72,7 +72,7 @@ public class WeiXinController {
         //文本消息
         if(map.get("MsgType").equals("text")){
             TextMessage message= weiXinReceiveService.receiveTextMessage(map);
-             sendXml=weiXinSendService.sendTextMessage(message);
+             sendXml=weiXinSendService.sendTextMessage(message,"请通过菜单选择您要访问的功能，感谢您的配合。");
 
         }else if(map.get("MsgType").equals("image")){   //事件消息
             PicMessage message= weiXinReceiveService.receivePicMessage(map);
@@ -159,7 +159,7 @@ public class WeiXinController {
 
         }else{
             TextMessage message= weiXinReceiveService.receiveTextMessage(map);
-            sendXml=weiXinSendService.sendTextMessage(message);
+            sendXml=weiXinSendService.sendTextMessage(message,"请通过菜单选择您要使用的功能，谢谢您的配合。");
         }
 //        System.out.println(sendXml);
         pw.write(sendXml);

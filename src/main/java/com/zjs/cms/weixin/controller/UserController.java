@@ -26,7 +26,7 @@ public class UserController {
     public String bindAccount(@PathVariable("openid") String openid, HttpServletRequest request) throws Exception{
         request.setAttribute("openid", openid);
         request.setAttribute("schoolList", schoolService.getListByRegion("130102"));//TODO 默认为石家庄长安区 功能扩展时需要调整
-        return "weixin/account_bind";
+        return "weixin/bind";
     }
 
     @RequestMapping("fetchSchool")
